@@ -2,9 +2,14 @@ import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 
+import Colors from "../constants/Colors";
+
+import navOptions from "../styles/NavOptions";
+
 export default class ExpiredScreen extends React.Component {
   static navigationOptions = {
-    title: 'Expired',
+    ...navOptions,
+    title: 'Expired'
   };
 
   render() {

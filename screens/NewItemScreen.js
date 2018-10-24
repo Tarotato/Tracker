@@ -1,22 +1,27 @@
-import React from "react";
+import React from 'react';
 import {
     ScrollView,
     StyleSheet,
     Text,
     TextInput,
     View,
-    Dimensions
-} from "react-native";
+    Dimensions,
+    DatePickerAndroid,
+    Button
+} from 'react-native';
+
+import navOptions from '../styles/NavOptions';
 
 export default class NewItemScreen extends React.Component {
     static navigationOptions = {
-        title: "New Item"
+        ...navOptions,
+        title: 'New Item'
     };
 
     state = {
-        name: "",
-        purchaseDate: "",
-        expiryDate: ""
+        name: '',
+        purchaseDate: '',
+        expiryDate: ''
     };
 
     render() {
@@ -33,11 +38,11 @@ export default class NewItemScreen extends React.Component {
                     />
                 </View>
                 {this.renderDateInput(
-                    "Purchase Date",
+                    'Purchase Date',
                     purchaseDate,
-                    "purchaseDate"
+                    'purchaseDate'
                 )}
-                {this.renderDateInput("Expiry Date", expiryDate, "expiryDate")}
+                {this.renderDateInput('Expiry Date', expiryDate, 'expiryDate')}
             </ScrollView>
         );
     }
@@ -53,28 +58,47 @@ export default class NewItemScreen extends React.Component {
                         this.setState({ fieldName: { text } })
                     }
                 />
+                <Button
+                    onPress={() => this.openDatePicker()}
+                    title="Learn More"
+                />
             </View>
         );
     }
+
+    openDatePicker() {
+        try {
+            const { action, year, month, day } = DatePickerAndroid.open({
+                // Use `new Date()` for current date.
+                // May 25 2020. Month 0 is January.
+                date: new Date(2020, 4, 25)
+            });
+            if (action !== DatePickerAndroid.dismissedAction) {
+                // Selected year, month (0-11), day
+            }
+        } catch ({ code, message }) {
+            console.warn('Cannot open date picker', message);
+        }
+    }
 }
 
-const width = Dimensions.get("window").width;
+const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 15,
-        backgroundColor: "#fff"
+        backgroundColor: '#fff'
     },
     name: {
         paddingBottom: 15,
-        flexDirection: "row",
-        alignItems: "center"
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     date: {
         paddingBottom: 15,
-        flexDirection: "row",
-        alignItems: "center"
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     textInput: {
         width: width * 0.5,
