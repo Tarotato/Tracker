@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import navOptions from '../styles/NavOptions';
+import Colors from '../constants/Colors';
 
 export default class NewItemScreen extends React.Component {
     static navigationOptions = {
@@ -25,13 +26,13 @@ export default class NewItemScreen extends React.Component {
     };
 
     render() {
-        const { name, purchaseDate, expiryDate } = this.props;
+        const { name, purchaseDate, expiryDate } = this.state;
         return (
             <ScrollView style={styles.container}>
                 <View style={styles.name}>
                     <Text>Name:</Text>
                     <TextInput
-                        style={styles.textInput}
+                        style={styles.nameTextInput}
                         multiline={true}
                         value={name}
                         onChangeText={name => this.setState({ name })}
@@ -54,27 +55,31 @@ export default class NewItemScreen extends React.Component {
                 <TextInput
                     style={styles.textInput}
                     value={value}
-                    onChangeText={text =>
-                        this.setState({ fieldName: { text } })
-                    }
+                    editable={false}
                 />
                 <Button
-                    onPress={() => this.openDatePicker()}
-                    title="Learn More"
+                    onPress={() => this.openDatePicker(fieldName)}
+                    title="Choose Date"
+                    color={Colors.primaryColor}
                 />
             </View>
         );
     }
 
-    openDatePicker() {
+    async openDatePicker(fieldName) {
         try {
-            const { action, year, month, day } = DatePickerAndroid.open({
+            const { action, year, month, day } = await DatePickerAndroid.open({
                 // Use `new Date()` for current date.
                 // May 25 2020. Month 0 is January.
-                date: new Date(2020, 4, 25)
+                date: new Date()
             });
-            if (action !== DatePickerAndroid.dismissedAction) {
+            // if (action !== DatePickerAndroid.dismissedAction) {
+            //     // Selected year, month (0-11), day
+            //     this.setState({ [fieldName]: `${day}/${month}/${year} ` });
+            // }
+            if (action === DatePickerAndroid.dateSetAction) {
                 // Selected year, month (0-11), day
+                this.setState({ [fieldName]: `${day}/${month}/${year} ` });
             }
         } catch ({ code, message }) {
             console.warn('Cannot open date picker', message);
@@ -95,13 +100,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
+    nameTextInput: {
+        minWidth: width * 0.7,
+        maxWidth: width * 0.7,
+        marginLeft: 5,
+        paddingLeft: 10,
+        paddingBottom: 5
+    },
     date: {
         paddingBottom: 15,
         flexDirection: 'row',
-        alignItems: 'center'
+        justifyContent: 'space-between'
     },
     textInput: {
-        width: width * 0.5,
+        minWidth: width * 0.3,
         marginLeft: 5,
         paddingLeft: 10,
         paddingBottom: 5
