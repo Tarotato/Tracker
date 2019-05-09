@@ -7,7 +7,8 @@ import {
     View,
     Dimensions,
     DatePickerAndroid,
-    Button
+    Button,
+    ToastAndroid
 } from 'react-native';
 
 import navOptions from '../styles/NavOptions';
@@ -23,6 +24,10 @@ export default class NewItemScreen extends React.Component {
         name: '',
         purchaseDate: '',
         expiryDate: ''
+    };
+
+    saveNewItem = () => {
+        ToastAndroid.show('Saved', ToastAndroid.SHORT);
     };
 
     render() {
@@ -44,17 +49,33 @@ export default class NewItemScreen extends React.Component {
                     'purchaseDate'
                 )}
                 {this.renderDateInput('Expiry Date', expiryDate, 'expiryDate')}
+                <Button
+                    onPress={this.saveNewItem}
+                    title="Save"
+                    color={Colors.accentColor2}
+                    disabled={
+                        this.state.name === '' ||
+                        this.state.purchaseDate === '' ||
+                        this.state.expiryDate === ''
+                    }
+                    accessibilityLabel="Save the current item details"
+                />
             </ScrollView>
         );
     }
 
     renderDateInput(label, value, fieldName) {
+        const day = new Date(value).getDate().toString();
+        const month = new Date(value).getMonth().toString();
+        const year = new Date(value).getFullYear().toString();
+        const date = value !== '' ? day + '/' + month + '/' + year : '';
+
         return (
             <View style={styles.date}>
                 <Text>{label}:</Text>
                 <TextInput
                     style={styles.textInput}
-                    value={value}
+                    value={date}
                     editable={false}
                 />
                 <Button
@@ -78,8 +99,20 @@ export default class NewItemScreen extends React.Component {
             //     this.setState({ [fieldName]: `${day}/${month}/${year} ` });
             // }
             if (action === DatePickerAndroid.dateSetAction) {
-                // Selected year, month (0-11), day
-                this.setState({ [fieldName]: `${day}/${month}/${year} ` });
+                if (
+                    fieldName === 'expiryDate' &&
+                    new Date(year, month, day) <=
+                        new Date(this.state.purchaseDate)
+                ) {
+                    ToastAndroid.show(
+                        'Expiry cannot be before purchase!',
+                        ToastAndroid.LONG
+                    );
+                } else {
+                    this.setState({
+                        [fieldName]: new Date(year, month, day).toString()
+                    });
+                }
             }
         } catch ({ code, message }) {
             console.warn('Cannot open date picker', message);
@@ -114,6 +147,7 @@ const styles = StyleSheet.create({
     },
     textInput: {
         minWidth: width * 0.3,
+        maxWidth: width * 0.3,
         marginLeft: 5,
         paddingLeft: 10,
         paddingBottom: 5
