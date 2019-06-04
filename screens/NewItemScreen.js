@@ -8,7 +8,8 @@ import {
     Dimensions,
     DatePickerAndroid,
     Button,
-    ToastAndroid
+    ToastAndroid,
+    AsyncStorage
 } from 'react-native';
 
 import navOptions from '../styles/NavOptions';
@@ -26,9 +27,61 @@ export default class NewItemScreen extends React.Component {
         expiryDate: ''
     };
 
-    saveNewItem = () => {
-        ToastAndroid.show('Saved', ToastAndroid.SHORT);
+    saveNewItem = async () => {
+        const { name, purchaseDate, expiryDate } = this.state;
+        const item = { name, purchaseDate, expiryDate };
+        const items = await this.loadItems();
+        let parsedItems = JSON.parse(items);
+
+        // Turn into array if not an array
+        if (!Array.isArray(parsedItems)) {
+            parsedItems = [parsedItems];
+        }
+
+        // Check for duplicates
+        const itemDoesNotExist = items.indexOf(JSON.stringify(item)) == -1;
+        if (itemDoesNotExist) {
+            parsedItems.push(item);
+            try {
+                // Save
+                await AsyncStorage.setItem(
+                    'ITEMS',
+                    JSON.stringify(parsedItems)
+                );
+                ToastAndroid.show(
+                    'Saved ' + this.state.name + ' successfully',
+                    ToastAndroid.LONG
+                );
+                this.resetForm();
+            } catch (error) {
+                // Error saving data
+                console.log('Error saving data', error);
+            }
+        } else {
+            ToastAndroid.show(
+                this.state.name + ' already exists',
+                ToastAndroid.LONG
+            );
+        }
     };
+
+    loadItems = async () => {
+        try {
+            let items = await AsyncStorage.getItem('ITEMS');
+            if (items === null) return [];
+            return items;
+        } catch (error) {
+            console.log('Error loading items', error);
+        }
+    };
+
+    resetForm() {
+        this.setState({
+            name: '',
+            purchaseDate: '',
+            expiryDate: ''
+        });
+    }
 
     render() {
         const { name, purchaseDate, expiryDate } = this.state;
