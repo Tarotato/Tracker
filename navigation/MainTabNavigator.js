@@ -1,32 +1,32 @@
-import React from "react";
-import { Platform } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import React from 'react';
+import { Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import {
     createStackNavigator,
     createBottomTabNavigator
-} from "react-navigation";
+} from 'react-navigation';
 
-import Colors from "../constants/Colors";
+import Colors from '../constants/Colors';
 
-import TabBarIcon from "../components/TabBarIcon";
-import HomeScreen from "../screens/HomeScreen";
-import ExpiredScreen from "../screens/ExpiredScreen";
-import NewItemScreen from "../screens/NewItemScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import TabBarIcon from '../components/TabBarIcon';
+import HomeScreen from '../screens/HomeScreen';
+import ExpiredScreen from '../screens/ExpiredScreen';
+import NewItemScreen from '../screens/NewItemScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 const HomeStack = createStackNavigator({
     Home: HomeScreen
 });
 
 HomeStack.navigationOptions = {
-    tabBarLabel: "Home",
+    tabBarLabel: 'Home',
     tabBarIcon: ({ focused }) => (
         <TabBarIcon
             focused={focused}
             name={
-                Platform.OS === "ios"
-                    ? `ios-information-circle${focused ? "" : "-outline"}`
-                    : "md-home"
+                Platform.OS === 'ios'
+                    ? `ios-information-circle${focused ? '' : '-outline'}`
+                    : 'md-home'
             }
         />
     )
@@ -37,14 +37,14 @@ const ExpiredStack = createStackNavigator({
 });
 
 ExpiredStack.navigationOptions = {
-    tabBarLabel: "Expired",
+    tabBarLabel: 'All Items',
     tabBarIcon: ({ focused }) => (
         <TabBarIcon
             focused={focused}
             name={
-                Platform.OS === "ios"
-                    ? `ios-link${focused ? "" : "-outline"}`
-                    : "md-close-circle"
+                Platform.OS === 'ios'
+                    ? `ios-link${focused ? '' : '-outline'}`
+                    : 'md-close-circle'
             }
         />
     )
@@ -55,14 +55,14 @@ const NewItemStack = createStackNavigator({
 });
 
 NewItemStack.navigationOptions = {
-    tabBarLabel: "New Item",
+    tabBarLabel: 'New Item',
     tabBarIcon: ({ focused }) => (
         <TabBarIcon
             focused={focused}
             name={
-                Platform.OS === "ios"
-                    ? `ios-link${focused ? "" : "-outline"}`
-                    : "md-add-circle"
+                Platform.OS === 'ios'
+                    ? `ios-link${focused ? '' : '-outline'}`
+                    : 'md-add-circle'
             }
         />
     )
@@ -73,14 +73,14 @@ const SettingsStack = createStackNavigator({
 });
 
 SettingsStack.navigationOptions = {
-    tabBarLabel: "Settings",
+    tabBarLabel: 'Settings',
     tabBarIcon: ({ focused }) => (
         <TabBarIcon
             focused={focused}
             name={
-                Platform.OS === "ios"
-                    ? `ios-options${focused ? "" : "-outline"}`
-                    : "md-options"
+                Platform.OS === 'ios'
+                    ? `ios-options${focused ? '' : '-outline'}`
+                    : 'md-options'
             }
         />
     )
@@ -95,8 +95,8 @@ export default createBottomTabNavigator(
     },
     {
         tabBarOptions: {
-            activeTintColor: "#fff",
-            inactiveTintColor: "#99a2ff",
+            activeTintColor: '#fff',
+            inactiveTintColor: '#99a2ff',
             labelStyle: {
                 fontSize: 12
             },

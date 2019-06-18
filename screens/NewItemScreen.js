@@ -90,6 +90,9 @@ export default class NewItemScreen extends React.Component {
                 <View style={styles.name}>
                     <Text>Name:</Text>
                     <TextInput
+                        selectionColor={Colors.accentColor2}
+                        underlineColorAndroid={Colors.accentColor2}
+                        placeholder="Product Name"
                         style={styles.nameTextInput}
                         multiline={true}
                         value={name}
@@ -127,6 +130,8 @@ export default class NewItemScreen extends React.Component {
             <View style={styles.date}>
                 <Text>{label}:</Text>
                 <TextInput
+                    placeholder="DD/MM/YYYY"
+                    underlineColorAndroid={Colors.grey}
                     style={styles.textInput}
                     value={date}
                     editable={false}
@@ -196,13 +201,14 @@ const styles = StyleSheet.create({
     date: {
         paddingBottom: 15,
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     textInput: {
+        height: 40,
         minWidth: width * 0.3,
         maxWidth: width * 0.3,
         marginLeft: 5,
-        paddingLeft: 10,
-        paddingBottom: 5
+        paddingLeft: 10
     }
 });
