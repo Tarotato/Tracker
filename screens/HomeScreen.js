@@ -6,6 +6,7 @@ import {
     StyleSheet,
     Text,
     SectionList,
+    FlatList,
     View,
     RefreshControl,
     AsyncStorage
@@ -13,6 +14,7 @@ import {
 import { WebBrowser } from 'expo';
 import { MonoText } from '../components/StyledText';
 import navOptions from '../styles/NavOptions';
+import { Button, List, ListItem, Card } from 'react-native-elements';
 
 export default class HomeScreen extends React.Component {
     static navigationOptions = {
@@ -21,31 +23,33 @@ export default class HomeScreen extends React.Component {
     };
 
     state = {
-        set: null
+        items: null
     };
 
-    handleRefresh = () => {
-        console.warn('refreshing');
-    };
+    async componentWillMount() {
+        const items = await this.loadItems();
+        let parsedItems = JSON.parse(items);
 
-    async componentDidMount() {
-        const initialState = await this.loadSettings();
+        // Turn into array if not an array
+        if (!Array.isArray(parsedItems)) {
+            parsedItems = [parsedItems];
+        }
+
+        //Set items
+        this.setState({ items: parsedItems });
     }
 
-    loadSettings = async () => {
+    loadItems = async () => {
         try {
-            let settings = await AsyncStorage.getItem('SETTINGS');
-
-            if (settings === null) {
-                console.warn('NOPE');
-                return;
-            }
-
-            // console.warn(settings);
-            //   return JSON.parse(settings);
+            let items = await AsyncStorage.getItem('ITEMS');
+            if (items === null) return [];
+            return items;
         } catch (error) {
-            console.log('Error loading settings', error);
+            console.log('Error loading items', error);
         }
+    };
+    handleRefresh = () => {
+        console.warn('refreshing');
     };
 
     handleRefresh = () => {
@@ -53,80 +57,45 @@ export default class HomeScreen extends React.Component {
     };
 
     render() {
-        const a = this.state.set;
         return (
             <View style={styles.container}>
-                <Text>Expiring Next</Text>
-                <Text>Total Items</Text>
-                <Text>Expired Items</Text>
-                <Text>Discarded Items</Text>
                 <ScrollView
                     style={styles.container}
                     contentContainerStyle={styles.contentContainer}
                 >
-                    <SectionList
-                        renderItem={({ item, index, section }) => (
-                            <Text key={index}>{item}</Text>
-                        )}
-                        renderSectionHeader={({ section: { title } }) => (
-                            <Text style={{ fontWeight: 'bold' }}>{title}</Text>
-                        )}
-                        sections={[
-                            { title: 'Title1', data: ['item1', 'item2'] },
-                            { title: 'Title2', data: ['item3', 'item4'] },
-                            { title: 'Title3', data: ['item5', 'item6'] }
-                        ]}
-                        keyExtractor={(item, index) => item + index}
+                    <FlatList
                         refreshControl={
                             <RefreshControl
                                 refreshing={false}
                                 onRefresh={this.handleRefresh}
                             />
                         }
+                        data={this.state.items}
+                        keyExtractor={(item, index) => item + index}
+                        renderItem={({ item }) => {
+                            const date = new Date(item.expiryDate);
+                            const itemExpiryDate =
+                                'Exp: ' +
+                                date.getDate() +
+                                '/' +
+                                date.getMonth() +
+                                '/' +
+                                date.getFullYear();
+                            return (
+                                <ListItem
+                                    leftAvatar={{
+                                        source: {
+                                            uri:
+                                                'https://data.whicdn.com/images/211488621/large.jpg'
+                                        }
+                                    }}
+                                    title={item.name}
+                                    subtitle={itemExpiryDate}
+                                    bottomDivider={true}
+                                />
+                            );
+                        }}
                     />
-
-                    {/* <View style={styles.welcomeContainer}>
-                        <Image
-                            source={
-                                __DEV__
-                                    ? require('../assets/images/robot-dev.png')
-                                    : require('../assets/images/robot-prod.png')
-                            }
-                            style={styles.welcomeImage}
-                        />
-                    </View>
-
-                    <View style={styles.getStartedContainer}>
-                        {this._maybeRenderDevelopmentModeWarning()}
-
-                        <Text style={styles.getStartedText}>
-                            Get started by opening
-                        </Text>
-
-                        <View
-                            style={[
-                                styles.codeHighlightContainer,
-                                styles.homeScreenFilename
-                            ]}
-                        >
-                            <MonoText style={styles.codeHighlightText}>
-                                screens/HomeScreen.js
-                            </MonoText>
-                        </View>
-
-                        <Text style={styles.getStartedText}>LOL</Text>
-                    </View>
-
-                    <View style={styles.helpContainer}>
-                        <TouchableOpacity
-                            onPress={this._handleHelpPress}
-                            style={styles.helpLink}
-                        >
-                            <Text style={styles.helpLinkText}>
-                                Help, it didn’t automatically reload!
-                            </Text>
-                        </TouchableOpacity>
-                    </View> */}
                 </ScrollView>
             </View>
         );
