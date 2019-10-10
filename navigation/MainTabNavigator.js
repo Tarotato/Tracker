@@ -10,9 +10,10 @@ import Colors from '../constants/Colors';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import ExpiredScreen from '../screens/ExpiredScreen';
+import AllItemsScreen from '../screens/AllItemsScreen';
 import NewItemScreen from '../screens/NewItemScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import { colors } from 'react-native-elements';
 
 const HomeStack = createStackNavigator({
     Home: HomeScreen
@@ -25,26 +26,26 @@ HomeStack.navigationOptions = {
             focused={focused}
             name={
                 Platform.OS === 'ios'
-                    ? `ios-information-circle${focused ? '' : '-outline'}`
+                    ? `ios-home${focused ? '' : '-outline'}`
                     : 'md-home'
             }
         />
     )
 };
 
-const ExpiredStack = createStackNavigator({
-    Expired: ExpiredScreen
+const AllItemsStack = createStackNavigator({
+    AllItems: AllItemsScreen
 });
 
-ExpiredStack.navigationOptions = {
+AllItemsStack.navigationOptions = {
     tabBarLabel: 'All Items',
     tabBarIcon: ({ focused }) => (
         <TabBarIcon
             focused={focused}
             name={
                 Platform.OS === 'ios'
-                    ? `ios-link${focused ? '' : '-outline'}`
-                    : 'md-close-circle'
+                    ? `ios-list${focused ? '' : '-outline'}`
+                    : 'md-list'
             }
         />
     )
@@ -61,8 +62,8 @@ NewItemStack.navigationOptions = {
             focused={focused}
             name={
                 Platform.OS === 'ios'
-                    ? `ios-link${focused ? '' : '-outline'}`
-                    : 'md-add-circle'
+                    ? `ios-add${focused ? '' : '-outline'}`
+                    : 'md-add'
             }
         />
     )
@@ -89,20 +90,21 @@ SettingsStack.navigationOptions = {
 export default createBottomTabNavigator(
     {
         HomeStack,
-        ExpiredStack,
-        NewItemStack,
-        SettingsStack
+        ExpiredStack: AllItemsStack,
+        NewItemStack
+        // SettingsStack
     },
     {
         tabBarOptions: {
-            activeTintColor: '#fff',
-            inactiveTintColor: '#99a2ff',
+            activeTintColor: Colors.darkPink,
+            inactiveTintColor: Colors.lightPink,
             labelStyle: {
                 fontSize: 12
             },
             style: {
-                backgroundColor: Colors.primaryColor,
-                paddingTop: 5
+                backgroundColor: Colors.white,
+                paddingTop: 10,
+                paddingBottom: 5
             }
         }
     }

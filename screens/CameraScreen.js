@@ -1,14 +1,15 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View, Dimensions } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
-import { Camera, Permissions } from 'expo';
+import { Camera } from 'expo';
+import * as Permissions from 'expo-permissions';
 import Colors from '../constants/Colors';
 import navOptions from '../styles/NavOptions';
 
 const { width: winWidth, height: winHeight } = Dimensions.get('window');
 const newWidth = winHeight * (3 / 4);
 
-export default class ExpiredScreen extends React.Component {
+export default class AllItemsScreen extends React.Component {
     static navigationOptions = {
         ...navOptions,
         title: 'All Products'

@@ -90,8 +90,8 @@ export default class NewItemScreen extends React.Component {
                 <View style={styles.name}>
                     <Text>Name:</Text>
                     <TextInput
-                        selectionColor={Colors.accentColor2}
-                        underlineColorAndroid={Colors.accentColor2}
+                        selectionColor={Colors.pink}
+                        underlineColorAndroid={Colors.pink}
                         placeholder="Product Name"
                         style={styles.nameTextInput}
                         multiline={true}
@@ -108,7 +108,7 @@ export default class NewItemScreen extends React.Component {
                 <Button
                     onPress={this.saveNewItem}
                     title="Save"
-                    color={Colors.accentColor2}
+                    color={Colors.pink}
                     disabled={
                         this.state.name === '' ||
                         this.state.purchaseDate === '' ||
@@ -139,7 +139,7 @@ export default class NewItemScreen extends React.Component {
                 <Button
                     onPress={() => this.openDatePicker(fieldName)}
                     title="Choose Date"
-                    color={Colors.primaryColor}
+                    color={Colors.lightPurple}
                 />
             </View>
         );
