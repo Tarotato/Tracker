@@ -4,6 +4,7 @@ export default {
     lightPink: '#ffb3db',
     pink: '#ff99cf',
     darkPink: '#ff66b7',
+    darkerPink: '#ff1a93',
     white: '#fff',
     grey: '#7e7e7e'
 };

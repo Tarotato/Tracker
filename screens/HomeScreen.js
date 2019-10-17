@@ -21,7 +21,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 export default class HomeScreen extends React.Component {
     static navigationOptions = {
         ...navOptions,
-        header: null
+        title: 'Expiring Next'
     };
 
     state = {
@@ -102,49 +102,42 @@ export default class HomeScreen extends React.Component {
         if (!this.state.items) return null;
         return (
             <View>
-                <LinearGradient
-                    colors={[Colors.lightPink, Colors.pink, Colors.darkPink]}
-                    style={{
-                        position: 'absolute',
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        height: 300
-                    }}
-                />
-                <Text style={styles.heading}>Expiring Next</Text>
+                <Text style={styles.heading}>
+                    Fenty Pro Filt'r Soft Matte Longwear Foundation
+                </Text>
                 <View
                     style={{
                         display: 'flex',
                         flexDirection: 'row',
-                        alignContent: 'center',
                         padding: 10,
-                        margin: 10,
-                        borderRadius: 25
+                        margin: 10
                     }}
                 >
+                    <View
+                        style={{
+                            flex: 1
+                        }}
+                    >
+                        <Text style={styles.subtitle}>Expires in:</Text>
+                        <Text style={styles.expiringText}>
+                            X Days, X Months
+                        </Text>
+                    </View>
                     <Image
                         style={{
-                            width: 100,
-                            height: 100,
-                            marginTop: 15,
+                            width: 150,
+                            height: 150,
                             marginBottom: 10,
-                            borderRadius: 50
+                            flex: 1,
+                            borderRadius: 25,
+                            borderColor: Colors.lightPink,
+                            borderWidth: 2
                         }}
                         source={{
                             uri:
                                 'https://www.sephora.com/productimages/sku/s2173714-main-zoom.jpg'
                         }}
                     />
-                    <View
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column'
-                        }}
-                    >
-                        <Text style={styles.subtitle}>Item name</Text>
-                        <Text style={styles.subtitle}>X Days, X Months</Text>
-                    </View>
                 </View>
             </View>
         );
@@ -153,44 +146,55 @@ export default class HomeScreen extends React.Component {
     // TODO : get top 2nd-4th items expiring soon
     renderItemsExpiringSoon() {
         return (
-            <ScrollView styles={styles.heading}>
+            <ScrollView
+                contentContainerStyle={{
+                    flexGrow: 1
+                }}
+            >
                 {this.renderNextItemExpiring()}
                 <View>
                     <Text style={styles.headingBlock}>Upcoming</Text>
                 </View>
-                <FlatList
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={false}
-                            onRefresh={this.handleRefresh}
-                        />
-                    }
-                    data={this.state.items}
-                    keyExtractor={(item, index) => item + index}
-                    renderItem={({ item }) => {
-                        const date = new Date(item.expiryDate);
-                        const itemExpiryDate =
-                            'Exp: ' +
-                            date.getDate() +
-                            '/' +
-                            date.getMonth() +
-                            '/' +
-                            date.getFullYear();
-                        return (
-                            <ListItem
-                                leftAvatar={{
-                                    source: {
-                                        uri:
-                                            'https://www.sephora.com/productimages/sku/s2156578-main-zoom.jpg'
-                                    }
-                                }}
-                                title={item.name}
-                                subtitle={itemExpiryDate}
-                                bottomDivider={true}
+                <View>
+                    <FlatList
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={false}
+                                onRefresh={this.handleRefresh}
                             />
-                        );
-                    }}
-                />
+                        }
+                        data={this.state.items}
+                        keyExtractor={(item, index) => item + index}
+                        renderItem={({ item }) => {
+                            const date = new Date(item.expiryDate);
+                            const itemExpiryDate =
+                                'Exp: ' +
+                                date.getDate() +
+                                '/' +
+                                date.getMonth() +
+                                '/' +
+                                date.getFullYear();
+                            return (
+                                <ListItem
+                                    leftAvatar={{
+                                        source: {
+                                            uri:
+                                                'https://www.sephora.com/productimages/sku/s2156578-main-zoom.jpg'
+                                        }
+                                    }}
+                                    title={item.name}
+                                    subtitle={itemExpiryDate}
+                                    bottomDivider={true}
+                                    chevron={{
+                                        size: 35,
+                                        name: 'navigate-next',
+                                        type: 'material'
+                                    }}
+                                />
+                            );
+                        }}
+                    />
+                </View>
             </ScrollView>
         );
     }
@@ -206,19 +210,21 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        display: 'flex'
+        display: 'flex',
+        backgroundColor: Colors.white
     },
     heading: {
-        color: Colors.white,
         fontSize: 25,
-        paddingTop: 50,
-        paddingLeft: 20
+        paddingTop: 10,
+        paddingLeft: 15,
+        paddingRight: 15
     },
     headingBlock: {
         color: Colors.white,
-        fontSize: 25,
+        fontSize: 22,
         padding: 5,
-        backgroundColor: Colors.darkPink,
+        paddingLeft: 15,
+        backgroundColor: Colors.lightPink,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -226,11 +232,16 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.22,
         shadowRadius: 2.22,
-        elevation: 2
+        elevation: 2,
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowColor: Colors.pink,
+        textShadowRadius: 0.5
     },
     subtitle: {
-        color: Colors.white,
-        fontSize: 20,
-        padding: 5
+        fontSize: 20
+    },
+    expiringText: {
+        fontSize: 25,
+        color: Colors.purple
     }
 });

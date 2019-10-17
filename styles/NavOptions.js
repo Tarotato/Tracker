@@ -9,7 +9,8 @@ export default {
     headerTitleStyle: {
         fontWeight: 'bold',
         textShadowOffset: { width: 1, height: 1 },
-        textShadowColor: Colors.lightPink,
+        textShadowColor: Colors.darkerPink,
+        textShadowRadius: 0.5,
         paddingRight: 0.5
     }
 };

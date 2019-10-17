@@ -108,7 +108,7 @@ export default class NewItemScreen extends React.Component {
                 <Button
                     onPress={this.saveNewItem}
                     title="Save"
-                    color={Colors.pink}
+                    color={Colors.darkPink}
                     disabled={
                         this.state.name === '' ||
                         this.state.purchaseDate === '' ||

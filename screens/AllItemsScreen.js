@@ -15,6 +15,7 @@ import { WebBrowser } from 'expo';
 import { MonoText } from '../components/StyledText';
 import navOptions from '../styles/NavOptions';
 import { Button, List, ListItem, Card } from 'react-native-elements';
+import Colors from '../constants/Colors';
 
 export default class AllItemsScreen extends React.Component {
     static navigationOptions = {
@@ -55,11 +56,8 @@ export default class AllItemsScreen extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <ScrollView
-                    style={styles.container}
-                    contentContainerStyle={styles.contentContainer}
-                >
+            <View>
+                <ScrollView>
                     <FlatList
                         refreshControl={
                             <RefreshControl
@@ -89,6 +87,11 @@ export default class AllItemsScreen extends React.Component {
                                     title={item.name}
                                     subtitle={itemExpiryDate}
                                     bottomDivider={true}
+                                    chevron={{
+                                        size: 35,
+                                        name: 'navigate-next',
+                                        type: 'material'
+                                    }}
                                 />
                             );
                         }}
