@@ -5,10 +5,8 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    SectionList,
     FlatList,
     View,
-    RefreshControl,
     AsyncStorage
 } from 'react-native';
 import { WebBrowser } from 'expo';
@@ -16,7 +14,31 @@ import { MonoText } from '../components/StyledText';
 import navOptions from '../styles/NavOptions';
 import { Button, List, ListItem, Card } from 'react-native-elements';
 import Colors from '../constants/Colors';
-import { LinearGradient } from 'expo-linear-gradient';
+
+const daysOfWeek = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+];
+
+const month = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+];
 
 export default class HomeScreen extends React.Component {
     static navigationOptions = {
@@ -25,11 +47,13 @@ export default class HomeScreen extends React.Component {
     };
 
     state = {
-        items: null
+        items: null,
+        latestItem: null
     };
 
     async componentWillMount() {
         const items = await this.loadItems();
+        const now = new Date();
         let parsedItems = JSON.parse(items);
 
         // Turn into array if not an array
@@ -37,16 +61,22 @@ export default class HomeScreen extends React.Component {
             parsedItems = [parsedItems];
         }
 
-        const c = parsedItems.slice(0, 3);
-        // .sort(function(a, b) {
-        //     const aa = new Date(a.expiryDate);
-        //     const bb = new Date(b.expiryDate);
-        //     return aa > bb ? 1 : 0;
-        // })
-        console.log(c);
+        // TODO: Check length of items
+        const latest = parsedItems.sort((a, b) => {
+            return new Date(a.date) - new Date(b.date);
+        })[parsedItems.length - 1];
+
+        // Get only the next 3 items excluding the next item expiring past this date
+        parsedItems = parsedItems
+            .sort((a, b) => {
+                return new Date(a.date) - new Date(b.date);
+            })
+            .filter(item => new Date(item.date) > now)
+            .slice(1, 4);
 
         //Set items
-        this.setState({ items: c });
+        this.setState({ items: parsedItems });
+        this.setState({ latestItem: latest });
     }
 
     loadItems = async () => {
@@ -59,51 +89,15 @@ export default class HomeScreen extends React.Component {
         }
     };
 
-    handleRefresh = () => {
-        console.warn('refreshing');
-    };
-
-    renderDate() {
-        const date = new Date();
-        const daysOfWeek = [
-            'Sunday',
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday'
-        ];
-
-        const month = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
-        ];
-        const today =
-            daysOfWeek[date.getDay()] +
-            ' ' +
-            date.getDate() +
-            ' ' +
-            month[date.getMonth()];
-        return <Text style={styles.heading}>{today}</Text>;
-    }
-
     renderNextItemExpiring() {
-        if (!this.state.items) return null;
+        const latest = this.state.latestItem;
+        if (!latest) return null;
+        const date = new Date(latest.expiryDate);
         return (
             <View>
                 <Text style={styles.heading}>
                     Fenty Pro Filt'r Soft Matte Longwear Foundation
+                    {latest.name}
                 </Text>
                 <View
                     style={{
@@ -118,21 +112,19 @@ export default class HomeScreen extends React.Component {
                             flex: 1
                         }}
                     >
-                        <Text style={styles.subtitle}>Expires in:</Text>
+                        <Text style={styles.subtitle}>Expires on:</Text>
                         <Text style={styles.expiringText}>
-                            X Days, X Months
+                            {daysOfWeek[date.getDay()] +
+                                ' ' +
+                                date.getDay() +
+                                ' ' +
+                                month[date.getMonth()] +
+                                ' ' +
+                                date.getFullYear()}
                         </Text>
                     </View>
                     <Image
-                        style={{
-                            width: 150,
-                            height: 150,
-                            marginBottom: 10,
-                            flex: 1,
-                            borderRadius: 25,
-                            borderColor: Colors.lightPink,
-                            borderWidth: 2
-                        }}
+                        style={styles.image}
                         source={{
                             uri:
                                 'https://www.sephora.com/productimages/sku/s2173714-main-zoom.jpg'
@@ -143,66 +135,62 @@ export default class HomeScreen extends React.Component {
         );
     }
 
-    // TODO : get top 2nd-4th items expiring soon
-    renderItemsExpiringSoon() {
+    renderListItem(item) {
+        const date = new Date(item.expiryDate);
+        const itemExpiryDate =
+            'Use by: ' +
+            daysOfWeek[date.getDay()] +
+            ' ' +
+            date.getDay() +
+            ' ' +
+            month[date.getMonth()] +
+            ' ' +
+            date.getFullYear();
         return (
-            <ScrollView
-                contentContainerStyle={{
-                    flexGrow: 1
+            <ListItem
+                leftAvatar={{
+                    source: {
+                        uri:
+                            'https://www.sephora.com/productimages/sku/s2156578-main-zoom.jpg'
+                    }
                 }}
-            >
-                {this.renderNextItemExpiring()}
-                <View>
-                    <Text style={styles.headingBlock}>Upcoming</Text>
-                </View>
-                <View>
-                    <FlatList
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={false}
-                                onRefresh={this.handleRefresh}
-                            />
-                        }
-                        data={this.state.items}
-                        keyExtractor={(item, index) => item + index}
-                        renderItem={({ item }) => {
-                            const date = new Date(item.expiryDate);
-                            const itemExpiryDate =
-                                'Exp: ' +
-                                date.getDate() +
-                                '/' +
-                                date.getMonth() +
-                                '/' +
-                                date.getFullYear();
-                            return (
-                                <ListItem
-                                    leftAvatar={{
-                                        source: {
-                                            uri:
-                                                'https://www.sephora.com/productimages/sku/s2156578-main-zoom.jpg'
-                                        }
-                                    }}
-                                    title={item.name}
-                                    subtitle={itemExpiryDate}
-                                    bottomDivider={true}
-                                    chevron={{
-                                        size: 35,
-                                        name: 'navigate-next',
-                                        type: 'material'
-                                    }}
-                                />
-                            );
-                        }}
-                    />
-                </View>
-            </ScrollView>
+                title={
+                    item.name +
+                    "Fenty Pro Filt'r Soft Matte Longwear Foundation"
+                }
+                subtitle={itemExpiryDate}
+                bottomDivider={true}
+                chevron={{
+                    size: 35,
+                    name: 'navigate-next',
+                    type: 'material'
+                }}
+            />
         );
     }
 
     render() {
         return (
             <View style={styles.container}>
-                {this.renderItemsExpiringSoon()}
+                <ScrollView styles={{ display: 'flex' }}>
+                    {this.renderNextItemExpiring()}
+                    <View>
+                        <Text style={styles.headingBlock}>Upcoming</Text>
+                    </View>
+                    {this.state.items && this.state.items.length > 0 ? (
+                        <FlatList
+                            data={this.state.items}
+                            keyExtractor={(item, index) => item + index}
+                            renderItem={item => {
+                                this.renderListItem(item);
+                            }}
+                        />
+                    ) : (
+                        <Text style={styles.upcomingText}>
+                            No more upcoming
+                        </Text>
+                    )}
+                </ScrollView>
             </View>
         );
     }
@@ -211,13 +199,20 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         display: 'flex',
-        backgroundColor: Colors.white
+        backgroundColor: Colors.white,
+        height: '100%'
+    },
+    expiringText: {
+        fontSize: 25,
+        color: Colors.purple,
+        fontFamily: 'font'
     },
     heading: {
         fontSize: 25,
         paddingTop: 10,
         paddingLeft: 15,
-        paddingRight: 15
+        paddingRight: 15,
+        fontFamily: 'font'
     },
     headingBlock: {
         color: Colors.white,
@@ -235,13 +230,27 @@ const styles = StyleSheet.create({
         elevation: 2,
         textShadowOffset: { width: 1, height: 1 },
         textShadowColor: Colors.pink,
-        textShadowRadius: 0.5
+        textShadowRadius: 0.5,
+        fontFamily: 'font'
+    },
+    image: {
+        width: 150,
+        height: 150,
+        marginBottom: 10,
+        flex: 1,
+        borderRadius: 25,
+        borderColor: Colors.lightPink,
+        borderWidth: 2
     },
     subtitle: {
-        fontSize: 20
+        fontSize: 20,
+        fontFamily: 'font'
     },
-    expiringText: {
-        fontSize: 25,
-        color: Colors.purple
+    upcomingText: {
+        textAlign: 'center',
+        color: Colors.grey,
+        paddingTop: 20,
+        paddingBottom: 20,
+        fontFamily: 'font'
     }
 });

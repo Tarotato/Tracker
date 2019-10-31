@@ -16,6 +16,32 @@ import { MonoText } from '../components/StyledText';
 import navOptions from '../styles/NavOptions';
 import { Button, List, ListItem, Card } from 'react-native-elements';
 import Colors from '../constants/Colors';
+import { orderBy } from 'lodash';
+
+const daysOfWeek = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+];
+
+const month = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+];
 
 export default class AllItemsScreen extends React.Component {
     static navigationOptions = {
@@ -35,6 +61,10 @@ export default class AllItemsScreen extends React.Component {
         if (!Array.isArray(parsedItems)) {
             parsedItems = [parsedItems];
         }
+
+        parsedItems = orderBy(parsedItems, i => {
+            return new Date(i.date);
+        }).reverse();
 
         //Set items
         this.setState({ items: parsedItems });
@@ -70,14 +100,22 @@ export default class AllItemsScreen extends React.Component {
                         renderItem={({ item }) => {
                             const date = new Date(item.expiryDate);
                             const itemExpiryDate =
-                                'Exp: ' +
-                                date.getDate() +
-                                '/' +
-                                date.getMonth() +
-                                '/' +
+                                'Use by: ' +
+                                daysOfWeek[date.getDay()] +
+                                ' ' +
+                                date.getDay() +
+                                ' ' +
+                                month[date.getMonth()] +
+                                ' ' +
                                 date.getFullYear();
                             return (
                                 <ListItem
+                                    titleStyle={{
+                                        fontFamily: 'font'
+                                    }}
+                                    subtitleStyle={{
+                                        fontFamily: 'font'
+                                    }}
                                     leftAvatar={{
                                         source: {
                                             uri:

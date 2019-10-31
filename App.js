@@ -8,11 +8,23 @@ import RootNavigation from './navigation/RootNavigation';
 
 export default class App extends React.Component {
     state = {
-        isLoadingComplete: false
+        isLoadingComplete: false,
+        isFontLoadingComplete: false
     };
 
+    async componentDidMount() {
+        await Font.loadAsync({
+            font: require('./assets/fonts/Sniglet-Regular.ttf')
+        });
+
+        this.setState({ isFontLoadingComplete: true });
+    }
+
     render() {
-        if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
+        if (
+            (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) ||
+            !this.state.isFontLoadingComplete
+        ) {
             return (
                 <AppLoading
                     startAsync={this._loadResourcesAsync}
@@ -61,6 +73,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        fontFamily: 'normal'
+        fontFamily: 'font'
     }
 });
