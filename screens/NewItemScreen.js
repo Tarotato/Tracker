@@ -7,13 +7,14 @@ import {
     View,
     Dimensions,
     DatePickerAndroid,
-    Button,
     ToastAndroid,
-    AsyncStorage
+    AsyncStorage,
+    TouchableOpacity
 } from 'react-native';
 
 import navOptions from '../styles/NavOptions';
 import Colors from '../constants/Colors';
+import { Button } from 'react-native-elements';
 
 export default class NewItemScreen extends React.Component {
     static navigationOptions = {
@@ -88,7 +89,7 @@ export default class NewItemScreen extends React.Component {
         return (
             <ScrollView style={styles.container}>
                 <View style={styles.name}>
-                    <Text>Name:</Text>
+                    <Text style={styles.font}>Name:</Text>
                     <TextInput
                         selectionColor={Colors.pink}
                         underlineColorAndroid={Colors.pink}
@@ -108,12 +109,17 @@ export default class NewItemScreen extends React.Component {
                 <Button
                     onPress={this.saveNewItem}
                     title="Save"
-                    color={Colors.darkPink}
                     disabled={
                         this.state.name === '' ||
                         this.state.purchaseDate === '' ||
                         this.state.expiryDate === ''
                     }
+                    buttonStyle={{
+                        backgroundColor: Colors.darkPink
+                    }}
+                    titleStyle={{
+                        fontFamily: 'font'
+                    }}
                     accessibilityLabel="Save the current item details"
                 />
             </ScrollView>
@@ -128,18 +134,29 @@ export default class NewItemScreen extends React.Component {
 
         return (
             <View style={styles.date}>
-                <Text>{label}:</Text>
-                <TextInput
-                    placeholder="DD/MM/YYYY"
-                    underlineColorAndroid={Colors.grey}
-                    style={styles.textInput}
-                    value={date}
-                    editable={false}
-                />
+                <View style={styles.dateContainer}>
+                    <Text style={styles.font}>{label}:</Text>
+                    <TextInput
+                        placeholder="DD/MM/YYYY"
+                        underlineColorAndroid={Colors.grey}
+                        style={styles.textInput}
+                        value={date}
+                        editable={false}
+                    />
+                </View>
                 <Button
                     onPress={() => this.openDatePicker(fieldName)}
                     title="Choose Date"
-                    color={Colors.lightPurple}
+                    buttonStyle={{
+                        // backgroundColor: Colors.lightPurple,
+                        borderColor: Colors.lightPurple,
+                        borderWidth: 2
+                    }}
+                    titleStyle={{
+                        fontFamily: 'font',
+                        color: Colors.lightPurple
+                    }}
+                    type="outline"
                 />
             </View>
         );
@@ -182,33 +199,55 @@ const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         padding: 15,
         backgroundColor: '#fff'
     },
     name: {
         paddingBottom: 15,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        fontFamily: 'font'
     },
     nameTextInput: {
         minWidth: width * 0.7,
         maxWidth: width * 0.7,
         marginLeft: 5,
         paddingLeft: 10,
-        paddingBottom: 5
+        paddingBottom: 5,
+        fontFamily: 'font'
     },
     date: {
         paddingBottom: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        fontFamily: 'font'
+    },
+    dateContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontFamily: 'font'
     },
     textInput: {
         height: 40,
-        minWidth: width * 0.3,
-        maxWidth: width * 0.3,
         marginLeft: 5,
-        paddingLeft: 10
+        paddingLeft: 5,
+        fontFamily: 'font'
+    },
+    font: {
+        fontFamily: 'font'
+    },
+    saveButton: {
+        backgroundColor: 'blue',
+        borderColor: 'white',
+        borderWidth: 1,
+        borderRadius: 12,
+        color: 'white',
+        fontSize: 24,
+        fontWeight: 'bold',
+        overflow: 'hidden',
+        padding: 12,
+        textAlign: 'center'
     }
 });

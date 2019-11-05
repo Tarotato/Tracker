@@ -8,23 +8,11 @@ import RootNavigation from './navigation/RootNavigation';
 
 export default class App extends React.Component {
     state = {
-        isLoadingComplete: false,
-        isFontLoadingComplete: false
+        isLoadingComplete: false
     };
 
-    async componentDidMount() {
-        await Font.loadAsync({
-            font: require('./assets/fonts/Sniglet-Regular.ttf')
-        });
-
-        this.setState({ isFontLoadingComplete: true });
-    }
-
     render() {
-        if (
-            (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) ||
-            !this.state.isFontLoadingComplete
-        ) {
+        if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
             return (
                 <AppLoading
                     startAsync={this._loadResourcesAsync}
@@ -51,9 +39,7 @@ export default class App extends React.Component {
             Font.loadAsync({
                 // This is the font that we are using for our tab bar
                 ...Ionicons.font,
-                // We include SpaceMono because we use it in HomeScreen.js. Feel free
-                // to remove this if you are not using it in your app
-                'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf')
+                font: require('./assets/fonts/Sniglet-Regular.ttf')
             })
         ]);
     };

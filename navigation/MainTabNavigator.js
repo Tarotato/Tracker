@@ -90,7 +90,7 @@ SettingsStack.navigationOptions = {
 export default createBottomTabNavigator(
     {
         HomeStack,
-        ExpiredStack: AllItemsStack,
+        AllItemsStack,
         NewItemStack
         // SettingsStack
     },
@@ -99,7 +99,8 @@ export default createBottomTabNavigator(
             activeTintColor: Colors.darkPink,
             inactiveTintColor: Colors.lightPink,
             labelStyle: {
-                fontSize: 12
+                fontSize: 12,
+                fontFamily: 'font'
             },
             style: {
                 backgroundColor: Colors.white,
